@@ -1,18 +1,137 @@
-/* style.css */
+/* GAYA ASAS */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 950px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+    color: #007bff; /* Biru PERKESO */
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.subtitle {
+    font-style: italic;
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+/* KAWASAN BORANG & INPUT */
+.selection-area {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+#input-tajuk {
+    width: calc(100% - 150px);
+    margin-right: 10px;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
 #generate-btn {
-    background-color: #ffc107; /* Warna Kuning/Emas untuk AI Generate */
+    background-color: #ffc107; /* Kuning/Emas untuk AI Generate */
     color: #333;
     padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s;
-    margin-top: 10px; /* Jarakkan dari input teks */
 }
 
 #generate-btn:hover {
     background-color: #e0a800;
+}
+
+.question-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-left: 5px solid #007bff;
+    background-color: #f8faff;
+}
+/* Gaya khusus untuk maklumat wajib */
+.wajib-fakta {
+    border-left: 5px solid #28a745; /* Hijau untuk Fakta Wajib */
+    background-color: #e6ffe6;
+}
+/* Gaya khusus untuk nota tambahan */
+.nota-tambahan {
+    border-left: 5px solid #d9534f; /* Merah untuk Penekanan */
+    background-color: #fcf8e3;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #0056b3;
+}
+
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Tambah margin untuk input wajib */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* BUTANG SUBMIT */
+#submit-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#submit-btn:disabled {
+    background-color: #a8d5b5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* AMARAN AI */
+.warning-box {
+    padding: 20px;
+    margin: 25px 0;
+    background-color: #f8d7da;
+    border: 2px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
 }
