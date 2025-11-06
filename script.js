@@ -1,12 +1,13 @@
 // --- script.js: BAHAGIAN KONFIGURASI GLOBAL ---
 
-// Masukkan API Key anda. JANGAN GUNA DI PRODUKSI/PUBLIK!
+// Kunci API Gemini yang telah diaktifkan
+// PENTING: Gantikan dengan Kunci API anda yang betul
 const GEMINI_API_KEY = "AIzaSyCam7BO0kqZ29B5GZUIXCRtts4MnM36_Zo"; 
 
 
-// PENTING: Bungkus semua kod logik di dalam DOMContentLoaded
+// PENTING: Bungkus semua kod logik di dalam DOMContentLoaded untuk mengelakkan ReferenceError
 document.addEventListener('DOMContentLoaded', function() {
-    // --- Perbaiki Ralat Rujukan (ReferenceError) dengan Pindah ke dalam fungsi ini ---
+    // --- Perbaiki Ralat Rujukan (ReferenceError) ---
     const soalanContainer = document.getElementById('soalan-container');
     const submitBtn = document.getElementById('submit-btn');
     const amaranAI = document.getElementById('amaran-ai');
@@ -25,21 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return null;
         }
 
+        // Tunjukkan status loading
         soalanContainer.innerHTML = '<p class="placeholder-text">🤖 Gemini sedang merangka soalan... Sila tunggu.</p>';
         submitBtn.disabled = true;
 
         // Prompt Sistem yang disasarkan untuk konteks PERKESO Malaysia
-        const promptTeks = `Anda adalah Pegawai Penyiasat Bencana Kerja PERKESO Malaysia. Tugas anda adalah merangka set soalan panduan yang sangat kritikal (5-8 soalan) untuk penyiasat bagi perkara: **${tajukPerkara}**. Soalan mesti berfokus kepada faktor penentu kelayakan tuntutan PERKESO (cth: rute, masa, tugas rasmi, perincian insiden, penyimpangan). Sediakan jawapan dalam format JSON array sahaja, di mana setiap objek mempunyai kunci 'id' (dalam format snake_case) dan 'label'. JANGAN masukkan sebarang teks lain selain array JSON.`;
+        const promptTeks = `Anda adalah Pegawai Penyiasat Bencana Kerja PERKESO Malaysia. Tugas anda adalah merangka set soalan panduan yang sangat kritikal (5-8 soalan) untuk penyiasat bagi perkara: **${tajukPerkara}**. Soalan mesti berfokus kepada faktor penentu kelayakan tuntutan PERKESO (cth: rute, masa, tugas rasmi, penyimpangan). Sediakan jawapan dalam format JSON array sahaja, di mana setiap objek mempunyai kunci 'id' (dalam format snake_case) dan 'label'. JANGAN masukkan sebarang teks lain atau pengenalan selain daripada array JSON.`;
 
         const requestBody = {
             contents: [{ role: "user", parts: [{ text: promptTeks }] }],
-            config: {
-                // Minta output JSON untuk parsing yang mudah
-                responseMimeType: "application/json", 
-            }
+            // Kita keluarkan sekatan responseMimeType: "application/json" untuk mengelakkan ralat 400
+            // Gemini akan output sebagai teks biasa
         };
         
-        // Panggilan API ke Gemini
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
@@ -48,19 +47,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            // Semak jika ada error API
+            
+            // Semak jika ada ralat API (cth: API Key tidak sah, atau Quota habis)
             if (data.error) {
-                soalanContainer.innerHTML = `<p class="warning-box">❌ Ralat API Dikesan: ${data.error.message}</p>`;
+                soalanContainer.innerHTML = `<p class="warning-box">❌ Ralat API. Sila semak konsol (F12) untuk detail. (${data.error.message})</p>`;
                 return null;
             }
 
+            // Ambil teks output dari Gemini
             const jsonText = data.candidates[0].content.parts[0].text;
-            // Penting: Pastikan Gemini hanya output JSON
-            return JSON.parse(jsonText);
+            
+            // --- Mekanisme Pembersihan JSON (Solusi untuk ralat 400/JSON Parsing) ---
+            // Buang tanda kod markdown seperti ```json dan ```
+            let cleanText = jsonText.replace(/```json/g, '').replace(/```/g, '').trim(); 
+            
+            // Cuba parse JSON yang telah dibersihkan
+            const soalanArray = JSON.parse(cleanText);
+            
+            return soalanArray;
 
         } catch (error) {
-            console.error("Ralat memanggil Gemini API atau parsing JSON:", error);
-            soalanContainer.innerHTML = `<p class="warning-box">❌ Ralat Sambungan/Parsing JSON. Sila semak konsol (F12) untuk detail.</p>`;
+            console.error("Ralat Parsing JSON selepas panggilan API berjaya:", error);
+            soalanContainer.innerHTML = '<p class="warning-box">❌ Gemini dihubungi tetapi GAGAL memahami atau merangka jawapan dalam format JSON yang betul. Sila cuba lagi atau ubah sedikit tajuk anda.</p>';
             return null;
         }
     }
@@ -95,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             submitBtn.disabled = false;
         } else if (soalanDraf) {
-             soalanContainer.innerHTML = '<p class="warning-box">Gemini tidak berjaya merangka soalan. Output kosong.</p>';
+             soalanContainer.innerHTML = '<p class="warning-box">Gemini berjaya dihubungi tetapi output soalan adalah kosong. Sila cuba lagi.</p>';
         }
     };
 
@@ -145,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(ringkasanData);
         console.log("=================================================");
         
-        alert(`✅ Pernyataan Berjaya Dihantar! Data telah dikumpul di Konsol Log (F12). Anda kini boleh tambah fungsi Cetak/PDF.`);
+        alert(`✅ Pernyataan Berjaya Dihantar! Data telah dikumpul di Konsol Log (F12).`);
         
         // Reset selepas hantar
         document.getElementById('pernyataan-form').reset();
