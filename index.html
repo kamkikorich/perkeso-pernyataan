@@ -5,23 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penjana Pernyataan & Tugas AI PERKESO</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Gaya khusus untuk memastikan semua input wajib muncul */
-        .wajib-fakta {
-            border-left: 5px solid #28a745;
-            background-color: #e6ffe6;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .wajib-fakta input {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>Penjana Pernyataan & Tugas AI PERKESO</h1>
-        <p class="subtitle">Alat Panduan Penyiasatan & Analisis Khusus (Dikuasakan Gemini AI).</p>
+        <p class="subtitle">Alat Panduan Penyiasatan & Analisis Khusus (Dikuasakan Gemini AI Pro).</p>
 
         <div class="module-section">
             <h2>1. Penjana Soalan Pernyataan</h2>
@@ -32,7 +20,6 @@
                     <option value="Majikan">Majikan/Wakil Syarikat</option>
                     <option value="Saksi/Rakan">Saksi/Rakan Sekerja</option>
                     <option value="Waris/Balu">Waris/Balu/Duda/Anak-Anak</option>
-                    <option value="Doktor/Klinikal">Doktor/Pihak Klinikal</option>
                 </select>
 
                 <label for="input-tajuk">Masukkan **Tajuk Perkara Khusus**:</label>
@@ -42,11 +29,11 @@
             
             <form id="pernyataan-form">
                 <div class="question-group wajib-fakta">
-                    <h3>Maklumat Pekerjaan Wajib (Isi dahulu)</h3>
-                    <label for="nama_pekerja">Nama Penuh Pekerja:</label><input type="text" id="nama_pekerja" placeholder="Contoh: Mohd Ali Bin Ahmad">
+                    <h3>Maklumat Wajib (Isi dahulu)</h3>
+                    <label for="nama_pekerja">Nama Penuh (Pekerja/Waris/Saksi):</label><input type="text" id="nama_pekerja" placeholder="Contoh: Mohd Ali Bin Ahmad">
                     <label for="ic_pekerja">Kad Pengenalan / Passport:</label><input type="text" id="ic_pekerja" placeholder="Contoh: 900101-10-5001">
-                    <label for="jawatan_rasmi">Jawatan Rasmi:</label><input type="text" id="jawatan_rasmi" placeholder="Contoh: Juruteknik Kanan">
-                    <label for="gaji_bulanan">Gaji Pokok / Purata Bulanan:</label><input type="text" id="gaji_bulanan" placeholder="Contoh: RM 3500.00">
+                    <label for="jawatan_rasmi">Jawatan Rasmi (Jika berkaitan):</label><input type="text" id="jawatan_rasmi" placeholder="Contoh: Juruteknik Kanan">
+                    <label for="gaji_bulanan">Gaji Pokok / Purata Bulanan (Jika berkaitan):</label><input type="text" id="gaji_bulanan" placeholder="Contoh: RM 3500.00">
                 </div>
 
                 <div id="soalan-container">
@@ -72,7 +59,7 @@
         <div class="module-section">
             <h2>2. Tugas Analisis & Bantuan Khas</h2>
             <div class="selection-area">
-                <label for="input-tugasan">Minta AI Lakukan Tugasan Khusus (Contoh: Cadangkan soalan susulan dari jawapan ini):</label>
+                <label for="input-tugasan">Minta AI Lakukan Tugasan Khusus:</label>
                 <textarea id="input-tugasan" style="min-height: 100px;" placeholder="Contoh: Senaraikan dokumen wajib untuk kes Waris/Balu mengikut undang-undang Malaysia. ATAU: Analisis konsistensi antara Pernyataan Majikan dan Saksi ini."></textarea>
                 <button type="button" id="tugasan-btn">Jalankan Tugasan AI</button>
             </div>
