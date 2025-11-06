@@ -60,7 +60,7 @@
             <h2>2. Tugas Analisis & Bantuan Khas</h2>
             <div class="selection-area">
                 <label for="input-tugasan">Minta AI Lakukan Tugasan Khusus:</label>
-                <textarea id="input-tugasan" style="min-height: 100px;" placeholder="Contoh: Senaraikan dokumen wajib untuk kes Waris/Balu mengikut undang-undang Malaysia. ATAU: Analisis konsistensi antara Pernyataan Majikan dan Saksi ini."></textarea>
+                <textarea id="input-tugasan" style="min-height: 100px;" placeholder="Contoh: Senaraikan dokumen wajib untuk kes Waris/Balu mengikut undang-undang Malaysia."></textarea>
                 <button type="button" id="tugasan-btn">Jalankan Tugasan AI</button>
             </div>
             <div id="output-tugasan" class="warning-box" style="display: none; background-color: #f0f8ff; border-left-color: orange;">
@@ -68,8 +68,26 @@
                 <div id="tugasan-content" style="white-space: pre-wrap;"></div>
             </div>
         </div>
-
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
+
+    <script>
+      // Konfigurasi Firebase ANDA (Daripada tangkapan layar anda)
+      const firebaseConfig = {
+        apiKey: "AIzaSyBUHxKs2PTaWVLgVy4mwyHG0S1LE1_MM",
+        authDomain: "gen-lang-client-0377344000.firebaseapp.com",
+        projectId: "gen-lang-client-0377344000",
+        storageBucket: "gen-lang-client-0377344000.firebasestorage.app",
+        messagingSenderId: "797689153899",
+        appId: "1:797689153899:web:7aa12adbc1eec1b5a8a42e"
+      };
+
+      // Inisialisasi Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    
     <script src="script.js"></script> 
 </body>
 </html>
