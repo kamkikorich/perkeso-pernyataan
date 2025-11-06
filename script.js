@@ -1,7 +1,7 @@
 // --- script.js: BAHAGIAN KONFIGURASI GLOBAL ---
 
 // Masukkan API Key anda. JANGAN GUNA DI PRODUKSI/PUBLIK!
-const GEMINI_API_KEY = "AIzaSyD1XIp_-VOOVpcJe-_BFiV8sXZcUtMrby4"; 
+const GEMINI_API_KEY = "AIzaSyCam7BO0kqZ29B5GZUIXCRtts4MnM36_Zo"; 
 
 
 // PENTING: Bungkus semua kod logik di dalam DOMContentLoaded
