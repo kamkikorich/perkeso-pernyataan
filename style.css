@@ -6,7 +6,6 @@ body {
     padding: 20px;
     color: #333;
 }
-
 .container {
     max-width: 950px;
     margin: 0 auto;
@@ -15,7 +14,6 @@ body {
     border-radius: 10px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
-
 h1 {
     color: #007bff; /* Biru PERKESO */
     border-bottom: 3px solid #007bff;
@@ -23,13 +21,11 @@ h1 {
     margin-bottom: 10px;
     font-weight: 600;
 }
-
 .subtitle {
     font-style: italic;
     color: #6c757d;
     margin-bottom: 25px;
 }
-
 /* KAWASAN BORANG & INPUT */
 .selection-area {
     margin-bottom: 30px;
@@ -38,7 +34,6 @@ h1 {
     border: 1px solid #dee2e6;
     border-radius: 8px;
 }
-
 #input-tajuk {
     width: calc(100% - 150px);
     margin-right: 10px;
@@ -47,8 +42,7 @@ h1 {
     border-radius: 4px;
     box-sizing: border-box;
 }
-
-#generate-btn {
+#generate-btn, #tugasan-btn {
     background-color: #ffc107; /* Kuning/Emas untuk AI Generate */
     color: #333;
     padding: 12px 20px;
@@ -58,36 +52,27 @@ h1 {
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s;
+    margin-top: 10px; /* Tambah margin jika perlu */
 }
-
-#generate-btn:hover {
+#generate-btn:hover, #tugasan-btn:hover {
     background-color: #e0a800;
 }
-
 .question-group {
     margin-bottom: 20px;
     padding: 15px;
     border-left: 5px solid #007bff;
     background-color: #f8faff;
 }
-/* Gaya khusus untuk maklumat wajib */
 .wajib-fakta {
     border-left: 5px solid #28a745; /* Hijau untuk Fakta Wajib */
     background-color: #e6ffe6;
 }
-/* Gaya khusus untuk nota tambahan */
-.nota-tambahan {
-    border-left: 5px solid #d9534f; /* Merah untuk Penekanan */
-    background-color: #fcf8e3;
-}
-
 label {
     display: block;
     font-weight: bold;
     margin-bottom: 8px;
     color: #0056b3;
 }
-
 input[type="text"], textarea, select {
     width: 100%;
     padding: 12px;
@@ -96,12 +81,10 @@ input[type="text"], textarea, select {
     box-sizing: border-box;
     margin-bottom: 10px; /* Tambah margin untuk input wajib */
 }
-
 textarea {
     resize: vertical;
     min-height: 120px;
 }
-
 /* BUTANG SUBMIT */
 #submit-btn {
     background-color: #28a745;
@@ -114,13 +97,11 @@ textarea {
     font-weight: bold;
     margin-top: 20px;
 }
-
 #submit-btn:disabled {
     background-color: #a8d5b5;
     cursor: not-allowed;
     opacity: 0.7;
 }
-
 /* AMARAN AI */
 .warning-box {
     padding: 20px;
@@ -131,7 +112,6 @@ textarea {
     border-radius: 5px;
     font-weight: bold;
 }
-
 .hidden {
     display: none;
 }
