@@ -1,4 +1,4 @@
-// --- script.js: VERSI MUKTAMAD (MODEL PRO) ---
+// --- script.js: VERSI MUKTAMAD (MODEL PRO & PERBAIKAN SYNTAXERROR) ---
 
 // Kunci API Gemini anda yang sah
 const GEMINI_API_KEY = "AIzaSyCam7BO0kqZ29B5GZUIXCRtts4MnM36_Zo"; 
@@ -165,7 +165,10 @@ Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai k
                 const group = document.createElement('div');
                 group.className = 'question-group';
                 
-                const inputField = `<textarea id="${q.id || 'soalan_'_ + index}" data-kategori="DYNAMIC" oninput="semakJawapan(this)"></textarea>`;
+                // ----------------------------------------------------
+                // PERBAIKAN SYNTAXERROR: 'soalan_'_ + index -> 'soalan_' + index
+                // ----------------------------------------------------
+                const inputField = `<textarea id="${q.id || 'soalan_' + index}" data-kategori="DYNAMIC" oninput="semakJawapan(this)"></textarea>`;
 
                 group.innerHTML = `<label for="${q.id || 'soalan_' + index}">${(index + 1)}. ${q.label || 'Soalan Tidak Diketahui'}</label>${inputField}`;
                 htmlContent += group.outerHTML;
