@@ -1,12 +1,13 @@
-// --- script.js: VERSI SELAMAT (TIADA API KEY DI SINI) ---
+// --- script.js: VERSI MUKTAMAD (MODEL PRO & PERBAIKAN RALAT INPUT TAJUK) ---
+
+// Kunci API Gemini anda yang sah
+const GEMINI_API_KEY = "AIzaSyCam7BO0kqZ29B5GZUIXCRtts4MnM36_Zo"; 
+
+// Tentukan model yang hendak digunakan (Pro)
+const GEMINI_MODEL = "gemini-2.5-pro";
 
 // Bungkus semua kod logik di dalam DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Dapatkan rujukan kepada fungsi backend 'callGemini' yang anda deploy
-    // Pastikan region anda betul jika anda deploy ke lokasi selain us-central1
-    const callGeminiFunction = firebase.functions().httpsCallable('callGemini');
-
     // --- Perolehan Elemen DOM ---
     const soalanContainer = document.getElementById('soalan-container');
     const submitBtn = document.getElementById('submit-btn');
@@ -23,44 +24,53 @@ document.addEventListener('DOMContentLoaded', function() {
     submitBtn.disabled = true;
 
     // =====================================================
-    // FUNGSI 1: GENERATE SOALAN (Memanggil Backend Selamat)
+    // FUNGSI 1: GENERATE SOALAN (Panggilan Gemini Pertama)
     // =====================================================
     async function generateSoalanOlehGemini(tajukPerkara, peranan) {
-        soalanContainer.innerHTML = '<p class="placeholder-text">🤖 Menghubungi pelayan selamat... Sila tunggu.</p>';
+        soalanContainer.innerHTML = '<p class="placeholder-text">🤖 Gemini Pro sedang merangka soalan... Sila tunggu.</p>';
         submitBtn.disabled = true;
 
-        const promptTeks = `Anda adalah Juruaudit dan Penyiasat Tuntutan PERKESO Malaysia. Tugas anda ialah menghasilkan set soalan penyiasatan kritikal (10-12 soalan) khusus untuk **${peranan}** mengenai perkara: **${tajukPerkara}**.
+        const promptTeks = `Anda adalah Juruaudit dan Penyiasat Tuntutan PERKESO Malaysia. Tugas anda ialah menghasilkan set soalan penyiasatan kritikal (10-12 soalan) khusus untuk **${peranan}** (Pihak yang membuat pernyataan) mengenai perkara: **${tajukPerkara}**.
 
 Soalan WAJIB merangkumi:
 1.  Fokus pada Jawatan, Gaji, Aktiviti Tepat semasa kejadian.
 2.  Logistik Asas (Masa, Tarikh, Lokasi Tepat, Punca).
-3.  Butiran Kecederaan dan Rawatan (Hospital, Cuti Sakit).
-4.  Jika ${peranan} adalah Waris/Majikan, masukkan soalan pengesahan hubungan/tindakan syarikat.
+3.  Kecuaian dan Kewujudan Saksi.
+4.  Butiran Kecederaan dan Rawatan (Hospital, Cuti Sakit).
+5.  Jika ${peranan} adalah Waris/Majikan, masukkan soalan pengesahan hubungan/tindakan syarikat.
+
 Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai kunci 'id' dan 'label'. JANGAN masukkan teks lain selain daripada array JSON.`;
 
+        const requestBody = { contents: [{ role: "user", parts: [{ text: promptTeks }] }] };
+        
         try {
-            // PANGGILAN SELAMAT: Hantar prompt ke Firebase Function
-            const result = await callGeminiFunction({ promptTeks: promptTeks });
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
 
-            // 'result.data.text' ialah jawapan bersih dari backend anda
-            const jsonText = result.data.text;
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+
+            const jsonText = data.candidates[0].content.parts[0].text;
             let cleanText = jsonText.replace(/```json/g, '').replace(/```/g, '').trim(); 
             return JSON.parse(cleanText);
 
         } catch (error) {
-            console.error("Ralat memanggil Firebase Function (generateSoalan):", error);
-            soalanContainer.innerHTML = '<p class="warning-box">❌ Ralat Pelayan Selamat. Sila semak konsol. (Mungkin Kunci API di backend anda tidak sah)</p>';
+            console.error("Ralat memanggil/parsing JSON:", error);
+            soalanContainer.innerHTML = '<p class="warning-box">❌ Gemini GAGAL merangka soalan. Sila semak konsol.</p>';
             return null;
         }
     }
 
     // =====================================================
-    // FUNGSI 2: GENERATE LAPORAN NARATIF (Memanggil Backend Selamat)
+    // FUNGSI 2: GENERATE LAPORAN NARATIF (Panggilan Gemini Kedua)
     // =====================================================
     async function generateLaporanNaratif(dataRingkasan) {
         submitBtn.textContent = 'Menjana Laporan Naratif...';
         
-        const promptLaporan = `Anda adalah editor laporan rasmi PERKESO. Berdasarkan fakta-fakta soalan-jawapan berikut, sila susunkan satu pernyataan naratif yang koheren, formal, dan berbentuk perenggan. Pastikan semua fakta utama (Nama, IC, Jawatan, Gaji, Masa, Tarikh, Lokasi, Kecederaan, Rawatan) dimasukkan. **Jika terdapat bahagian 'Nota Tambahan Penyiasat', sila integrasikan maklumat tersebut.** Mulakan naratif tanpa sebarang pengenalan atau tajuk.
+        const promptLaporan = `Anda adalah editor laporan rasmi PERKESO. Berdasarkan fakta-fakta soalan-jawapan berikut, sila susunkan satu pernyataan naratif yang koheren, formal, dan berbentuk perenggan. Pastikan semua fakta utama (Nama, IC, Jawatan, Gaji, Masa, Tarikh, Lokasi, Kecederaan, Rawatan) dimasukkan. **Jika terdapat bahagian 'Nota Tambahan Penyiasat', sila integrasikan maklumat tersebut sebagai sebahagian dari Laporan Rasmi.** Mulakan naratif tanpa sebarang pengenalan atau tajuk.
 
         FAKTA DATA DARI PENYIASATAN:
         ---
@@ -68,19 +78,26 @@ Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai k
         ---
         `;
 
+        const requestBody = { contents: [{ role: "user", parts: [{ text: promptLaporan }] }] };
+        
         try {
-            // PANGGILAN SELAMAT: Hantar prompt ke Firebase Function
-            const result = await callGeminiFunction({ promptTeks: promptLaporan });
-            return result.data.text; // Jawapan teks bersih
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
 
         } catch (error) {
-            console.error("Ralat memanggil Firebase Function (generateLaporan):", error);
+            console.error("Ralat menjana Laporan Naratif:", error);
             return "Gagal menjana laporan naratif disebabkan ralat API/Sambungan.";
         }
     }
 
     // =====================================================
-    // FUNGSI 3: JANA TUGASAN AI LANJUTAN (Memanggil Backend Selamat)
+    // FUNGSI 3: JANA TUGASAN AI LANJUTAN (Panggilan Gemini Ketiga)
     // =====================================================
     async function janaTugasanAI() {
         const tugasanInput = inputTugasan.value.trim();
@@ -93,12 +110,15 @@ Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai k
         tugasanContent.textContent = '🤖 AI Pro sedang menganalisis tugasan anda...';
 
         const promptTugasan = `Anda adalah seorang Penganalisis Undang-Undang PERKESO. Jawab dan jalankan tugasan ini: ${tugasanInput}. Jawapan anda mesti berformat dan ringkas. Sertakan rujukan kepada prosedur/akta Malaysia jika sesuai.`;
+
+        const requestBody = { contents: [{ role: "user", parts: [{ text: promptTugasan }] }] };
         
         try {
-            // PANGGILAN SELAMAT: Hantar prompt ke Firebase Function
-            const result = await callGeminiFunction({ promptTeks: promptTugasan });
-            tugasanContent.textContent = result.data.text;
-
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
+            });
+            const data = await response.json();
+            tugasanContent.textContent = data.candidates[0].content.parts[0].text;
         } catch (error) {
             tugasanContent.textContent = '❌ Ralat memproses tugasan. Sila cuba lagi atau semak konsol.';
         }
@@ -127,7 +147,13 @@ Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai k
 
     // Pengendali Butang Rangka Soalan
     async function muatSoalanDinamik() {
-        const tajukInput = inputTugasan.value.trim();
+        // ----------------------------------------------------
+        // PERBAIKAN RALAT KRITIKAL ADA DI SINI
+        // ----------------------------------------------------
+        // KOD LAMA (SALAH): const tajukInput = inputTugasan.value.trim(); 
+        const tajukInput = inputTajuk.value.trim(); // KOD DIPERBETULKAN
+        // ----------------------------------------------------
+
         const peranan = perananPembuat.options[perananPembuat.selectedIndex].value;
 
         if (tajukInput.length < 8) {
@@ -168,7 +194,7 @@ Sediakan output dalam format JSON array sahaja, di mana setiap objek mempunyai k
     };
 
     // =====================================================
-    // 5️⃣ PENGENDALI ACARA (EVENT LISTENERS) - Membetulkan ReferenceError
+    // 5️⃣ PENGENDALI ACARA (EVENT LISTENERS) - MENGELAKKAN Ralat ReferenceError
     // =====================================================
     
     // Memautkan butang ke fungsi JavaScript
