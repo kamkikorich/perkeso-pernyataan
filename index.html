@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPP-BKP | Penjana Pernyataan & Tugasan AI</title>
+    <title>Penjana Pernyataan & Tugas AI PERKESO</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Gaya khusus untuk memastikan semua input wajib muncul */
+        .wajib-fakta {
+            border-left: 5px solid #28a745;
+            background-color: #e6ffe6;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .wajib-fakta input {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -25,18 +37,34 @@
 
                 <label for="input-tajuk">Masukkan **Tajuk Perkara Khusus**:</label>
                 <input type="text" id="input-tajuk" placeholder="Contoh: Kemalangan semasa perjalanan balik dari tempat kerja">
-                <button type="button" id="generate-btn" onclick="muatSoalanDinamik()">Rangka Soalan AI</button>
+                <button type="button" id="generate-btn">Rangka Soalan AI</button>
             </div>
             
             <form id="pernyataan-form">
                 <div class="question-group wajib-fakta">
-                    </div>
+                    <h3>Maklumat Pekerjaan Wajib (Isi dahulu)</h3>
+                    <label for="nama_pekerja">Nama Penuh Pekerja:</label><input type="text" id="nama_pekerja" placeholder="Contoh: Mohd Ali Bin Ahmad">
+                    <label for="ic_pekerja">Kad Pengenalan / Passport:</label><input type="text" id="ic_pekerja" placeholder="Contoh: 900101-10-5001">
+                    <label for="jawatan_rasmi">Jawatan Rasmi:</label><input type="text" id="jawatan_rasmi" placeholder="Contoh: Juruteknik Kanan">
+                    <label for="gaji_bulanan">Gaji Pokok / Purata Bulanan:</label><input type="text" id="gaji_bulanan" placeholder="Contoh: RM 3500.00">
+                </div>
 
                 <div id="soalan-container">
                     <p class="placeholder-text">Sila masukkan tajuk dan pilih peranan untuk memulakan borang.</p>
                 </div>
                 
-                </form>
+                <div class="question-group" style="border-left: 5px solid #d9534f;">
+                    <h3>📌 Nota Tambahan Penyiasat</h3>
+                    <textarea id="nota_tambahan_penyiasat" oninput="semakJawapan(this)" style="min-height: 150px;"></textarea>
+                </div>
+                
+                <div id="amaran-ai" class="warning-box hidden">
+                    <h4>⚠️ Amaran AI: Fokus Penyiasatan!</h4>
+                    <p id="amaran-ai-text"></p>
+                </div>
+                
+                <button type="submit" id="submit-btn" disabled>Jana Pernyataan Naratif Akhir</button>
+            </form>
         </div>
 
         <hr style="margin: 40px 0;">
@@ -46,7 +74,7 @@
             <div class="selection-area">
                 <label for="input-tugasan">Minta AI Lakukan Tugasan Khusus (Contoh: Cadangkan soalan susulan dari jawapan ini):</label>
                 <textarea id="input-tugasan" style="min-height: 100px;" placeholder="Contoh: Senaraikan dokumen wajib untuk kes Waris/Balu mengikut undang-undang Malaysia. ATAU: Analisis konsistensi antara Pernyataan Majikan dan Saksi ini."></textarea>
-                <button type="button" onclick="janaTugasanAI()">Jalankan Tugasan AI</button>
+                <button type="button" id="tugasan-btn">Jalankan Tugasan AI</button>
             </div>
             <div id="output-tugasan" class="warning-box" style="display: none; background-color: #f0f8ff; border-left-color: orange;">
                 <h4>✅ Hasil Analisis AI:</h4>
